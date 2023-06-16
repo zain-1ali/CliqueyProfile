@@ -1,0 +1,61 @@
+.myconatainer {
+    background-color: #f3f4f6;
+    width: 370px;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.myinnercontainer {
+    width: 345px;
+    border: 1px solid black;
+    height: 80vh;
+    margin-top: 20px;
+    border-radius: 17px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.last-container {
+    width: 360px;
+    margin-top: 30px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.myimg2 {
+    height: 110px;
+    width: 110px;
+    margin-top: 60px;
+}
+
+.p1 {
+    margin-top: 55px;
+    font-size: 15px;
+    width: 92%;
+    color: #000;
+    text-align: center;
+}
+
+.lockicon {
+    font-size: 46px;
+    margin-top: 50px;
+    color: #000;
+}
+
+.activate_sapid_card_button_div {
+    width: 90%;
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+}
+.myimg {
+    height: 50px;
+    width: 50px;
+    margin-right: 8px;
+}
