@@ -7,6 +7,7 @@ import { getDownloadURL, ref as storagref } from "firebase/storage";
 import ReactPlayer from "react-player/youtube";
 import custom from "../imgs/customi.png";
 import booksy from "../imgs/booksy.png";
+import eventbrite from "../imgs/eventbrite.png";
 import styleseat from "../imgs/styleseat.png";
 import cashApp from "../imgs/cashApp.png";
 import VCard from "vcard-creator";
@@ -14,6 +15,9 @@ import Leadform from "../components/Leadform";
 import { QRCode } from 'react-qrcode-logo';
 import Loader from "../components/Loader";
 import Notfound from "./Notfound";
+import vcard from 'vcards-js'
+import axios from 'axios'
+
 
 const Home = () => {
   let { userid } = useParams();
@@ -190,7 +194,10 @@ const Home = () => {
       return booksy;
     } else if (name === "StyleSeat") {
       return styleseat;
-    } else if (name === "Custom Link") {
+    }else if (name === "Event Brite") {
+      return eventbrite;
+    }
+     else if (name === "Custom Link") {
       return custom;
     }
   };
@@ -227,7 +234,7 @@ const Home = () => {
     } else if (name === "TikTok") {
       return `https://tiktok.com/@${url}`;
     } else {
-      if (name?.includes("https://")) {
+      if (url?.includes("https://")) {
         return url;
       } else {
         return `https://${url}`;
@@ -260,6 +267,11 @@ const Home = () => {
 
   // Download Vcf file
 
+
+// console.log(base64img.slice(37))
+
+
+
   let downloadVcf = async () => {
     // Define a new vCard
     const myVCard = new VCard();
@@ -273,14 +285,13 @@ const Home = () => {
 
     myVCard
       .addName(lastname, firstname, additional, prefix, suffix)
-      .addPhoto(base64img, "JPEG")
       .addJobtitle(userdata?.job)
-
       .addEmail(userdata?.email)
-      .addPhoneNumber(userdata?.phone);
-
+      .addPhoneNumber(userdata?.phone)
+      .addPhoto(base64img.slice(37), 'jpeg')
+      .addAddress('', '', '', userdata?.address, '', '', '')
     sociallink?.map((link) => {
-      myVCard.addSocial(link.value, link.name, link.name);
+      myVCard.addSocial(link?.value,link?.name,link?.name);
     });
 
     const vcardData = myVCard.toString();
@@ -292,6 +303,66 @@ const Home = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
+
+// --------------------------------------------------------------------
+
+
+
+//         const myVCard = new vcard();
+
+//     myVCard.firstName = userdata?.name;
+// myVCard.middleName = '';
+// myVCard.lastName = '';
+// myVCard.workPhone = userdata?.phone;
+// myVCard.title = userdata?.job;
+// myVCard.email = userdata?.email
+// myVCard.photo.attachFromUrl(profileurl, 'JPEG');
+//  sociallink?.map((link) => {
+//       myVCard.socialUrls[link?.name?.toLowerCase()] = link?.value;
+//     });
+
+
+
+
+  // Generate the vCard file content
+  // const vCardContent = myVCard.getFormattedString();
+
+  // Create a Blob with the vCard content
+  // const blob = new Blob([vCardContent], { type: 'text/vcard' });
+
+  // Create a download URL for the Blob
+  // const url = URL.createObjectURL(blob);
+
+  // Create a link element to trigger the download
+  // const link = document.createElement('a');
+  // link.href = url;
+  // link.setAttribute('download', 'contact.vcf');
+
+  // Simulate a click event on the link to start the download
+  // link.click();
+
+  // Clean up the URL and link
+  // URL.revokeObjectURL(url);
+  // link.remove();
+
+
+// ----------------------------------------------------------------------------
+
+
+
+// axios.post('http://localhost:6001/api/convertVcf', {userdata,sociallink,img:profileurl})
+//   .then((response) => {
+//     // Create a download link for the vCard
+//     const downloadLink = document.createElement('a');
+//     downloadLink.href = URL.createObjectURL(new Blob([response.data]));
+//     downloadLink.download = 'contact.vcf';
+//     downloadLink.click();
+//   })
+//   .catch((error) => {
+//     console.error('Error:', error);
+//   });
+
   };
 
  
@@ -313,7 +384,7 @@ const Home = () => {
         <div class="h-[167px] w-[100%] mt-3 border rounded-xl flex shadow-md">
           <div class="w-[50%] h-[100%] object-cover rounded-l-xl">
             <img
-              src={profileurl ? profileurl : `https://placehold.co/200x170`}
+              src={profileurl ? profileurl : `https://placehold.co/200x175`}
               alt=""
               class="w-[100%] h-[100%]  rounded-l-xl "
             />
@@ -416,13 +487,19 @@ const Home = () => {
                     src={returnIcons(elm?.name)}
                     alt="img"
                     class={` ${
-                      elm?.name === "Calendly"
-                        ? "h-[67px] w-[67px] rounded-[10px] shadow-md"
-                        : "h-[70] w-[70px]"
+                     "h-[70] w-[70px]"
                     }`}
+                    // elm?.name === "Calendly" || elm?.name === "Event Brite" || elm?.name === "StyleSeat" || elm?.name === "Booksy"
+                    // ? "h-[65px] w-[65px] rounded-[10px] shadow-md"
+                    // : 
                     // style={elm?.name==='Calendly'? {borderRadius:'10px'}:null}
                   />
-                  <h2 class="font-medium text-sm mt-4">{elm?.name}</h2>
+                  <h2   class={` ${
+                      "font-medium text-sm mt-4"
+                    }`}>{elm?.name}</h2>
+                    {/* elm?.name === "Calendly" || elm?.name === "Event Brite" || elm?.name === "StyleSeat" || elm?.name === "Booksy"
+                        ? "font-medium text-sm mt-[22px]"
+                        :  */}
                 </a>
               </>
             );
@@ -435,7 +512,7 @@ const Home = () => {
       </div>
 
       <div class="w-[94%] flex justify-center mt-8 ">
-      <QRCode value="https://github.com/gcoro/react-qrcode-logo" size='100'/>
+      <QRCode value={window.location.href} size='100'/>
       </div>
       <br />
 <br />
